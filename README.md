@@ -27,4 +27,4 @@ handsets, GPS modules or watches.
 - [BME280 product page](https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/)
 - [BME280 datasheet](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf)
 - [BME280 shuttle board flyer](https://www.bosch-sensortec.com/media/boschsensortec/downloads/shuttle_board_flyer/application_board_3_1/bst-bme280-sf000.pdf)
-- [Community support page](https://community.bosch-sensortec.com)
+- [Community support page](https://community.bosch-sensortec.com)# bme280_esp32
