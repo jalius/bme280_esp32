@@ -3,6 +3,9 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  **/
+/*
+ *  Modified ESP32 to BME280 source code adopted from Bosch Sensortec BME280_SensorAPI
+ */
 
 #ifndef _COMMON_H
 #define _COMMON_H
@@ -25,7 +28,8 @@ extern "C" {
  */
 typedef struct bme280_i2c_conf
 {
-	uint8_t address; // BME280 device address
+	uint8_t addr; // BME280 device address
+	i2c_port_t i2c_port; // Selected on-chip peripheral
 	i2c_config_t i2c_conf; // ESP32 i2c config
 } bme280_i2c_conf;
 /*

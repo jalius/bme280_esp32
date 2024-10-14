@@ -1,5 +1,10 @@
 /**
- * Modified ESP32 to BME280 source code adopted from Bosch Sensortec BME280_SensorAPI
+ * Copyright (C) 2020 Bosch Sensortec GmbH. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+/*
+ *  Modified ESP32 to BME280 source code adopted from Bosch Sensortec BME280_SensorAPI
  */
 
 #include <stdint.h>
@@ -19,17 +24,16 @@ const TickType_t timeout = timeout_ms / portTICK_PERIOD_MS;
 /******************************************************************************/
 /*!                User interface functions                                   */
 
-static void init_i2c(i2c_config_t *conf);
+static void init_i2c(struct bme280_i2c_conf *conf);
 /*!
  * I2C read function map to ESP32 platform
  */
 BME280_INTF_RET_TYPE bme280_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr)
 {
     struct bme280_i2c_conf* intf = intf_ptr;
-	uint8_t dev_addr = intf->address;	
-	init_i2c(&intf->i2c_conf);
+	init_i2c(intf);
 	// write the reg address, then read the data out (device auto-increments)
-	esp_err_t err = i2c_master_write_read_device(I2C_NUM_0, dev_addr, &reg_addr, 1, reg_data, length, timeout);
+	esp_err_t err = i2c_master_write_read_device(intf->i2c_port, intf->addr, &reg_addr, 1, reg_data, length, timeout);
 	ESP_ERROR_CHECK(err);
 	return err == ESP_OK ? BME280_INTF_RET_SUCCESS : BME280_E_COMM_FAIL;
 }
@@ -40,8 +44,7 @@ BME280_INTF_RET_TYPE bme280_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32
 BME280_INTF_RET_TYPE bme280_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr)
 {
     struct bme280_i2c_conf* intf = intf_ptr;
-	uint8_t dev_addr = intf->address;	
-	init_i2c(&intf->i2c_conf);
+	init_i2c(intf);
 	// The API returns reg_addr and reg_data separately, even though the address is
 	// part of transmit packet...
 	//
@@ -54,7 +57,7 @@ BME280_INTF_RET_TYPE bme280_i2c_write(uint8_t reg_addr, const uint8_t *reg_data,
 	assert(length < sizeof(reg_addr_data));
 	reg_addr_data[0] = reg_addr;
 	memcpy(&reg_addr_data[1], reg_data, length); 
-	esp_err_t err = i2c_master_write_to_device(I2C_NUM_0, dev_addr, reg_addr_data, length + 1, timeout);
+	esp_err_t err = i2c_master_write_to_device(intf->i2c_port, intf->addr, reg_addr_data, length + 1, timeout);
 	ESP_ERROR_CHECK(err);
 	return err == ESP_OK ? BME280_INTF_RET_SUCCESS : BME280_E_COMM_FAIL;
 }
@@ -85,8 +88,8 @@ void bme280_init_i2c_dev(struct bme280_i2c_conf *conf, struct bme280_dev *dev)
 /*!
  * Config i2c in esp32
  */
-static void init_i2c(i2c_config_t *conf)
+static void init_i2c(struct bme280_i2c_conf *conf)
 {
 	// config i2c, channel 0. used before every read/write operation.
-	ESP_ERROR_CHECK(i2c_param_config(I2C_NUM_0, conf));
+	ESP_ERROR_CHECK(i2c_param_config(conf->i2c_port, &conf->i2c_conf));
 }
