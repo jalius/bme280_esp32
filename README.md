@@ -1,6 +1,7 @@
 # BME280 sensor API
 ## Summary
-This project adds ESP32-IDF I2C driver suppor to the BME280, forked from [BME280 API](https://github.com/boschsensortec/BME280_SensorAPI).
+This API enables I2C communication with the BME280 sensor using ESP32.
+This is an interface layer for interacting with the BME280 Sensor API. It was forked from [here](https://github.com/boschsensortec/BME280_SensorAPI).
 ## Usage
 See the [example project repo](https://github.com/jalius/bme280_esp32_example).
 ## Installation
